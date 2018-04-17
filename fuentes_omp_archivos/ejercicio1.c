@@ -18,12 +18,14 @@ int main(int argc,char*argv[]){
  //Inicializa la matriz. Cada posicion debe quedar con el valor I*J
  // I => fila J=> columna. 
 /*
+    El problema q tiene es por un lado:
     El problema q tiene es que divide mal los hilos dependiendo del primer for, el que hay que parametrizar para este caso
     es el primero, cosa que se dividan en partes iguales las secciones a recorrer
     y nunca se pisen los resultados de las multiplicaciones.
 */
-#pragma omp parallel for shared(A) private(i,j)
+
   for(i=0;i<N;i++){
+  #pragma omp parallel for shared(A) private(i,j)
     for(j=0;j<N;j++){
 	    	A[i*N+j]=i*j;
     }
