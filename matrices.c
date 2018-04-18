@@ -37,11 +37,21 @@ int main(int argc,char*argv[]){
 
   timetick = dwalltime();
  //Realiza la multiplicacion
+ /*
+    Para tener en cuenta, de la forma que estan planteados los for, el primero esta realizando un recorrido por FIlas
+    su contraparte, el segundo, esta haciendolo por Columnas.
+    Para parametrizar el for en cualquiera de los casos, colocamos: 
+
+    #pragma omp parallel for shared(Variable) private(variableA, variableB)
+ */
+// se paraleliza el primer for solamente
+#pragma omp parallel for shared(C,A,B) private(i,j,k)
   for(i=0;i<N;i++){
+   //#pragma omp parallel for shared(i) private(j,k)
    for(j=0;j<N;j++){
     C[i*N+j]=0;
     for(k=0;k<N;k++){
-	C[i*N+j]= C[i*N+j] + A[i*N+k]*B[k+j*N];
+        C[i*N+j]= C[i*N+j] + A[i*N+k]*B[k+j*N];
     }
    }
   }   

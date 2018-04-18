@@ -3,6 +3,12 @@
 #include<stdlib.h>
 #include<omp.h> 
 
+/*
+Una matriz cuadrada es antisimétrica si su traspuesta coincide con su inverso aditivo.
+Si los elementos de la matriz son números complejos 
+y su traspuesta coincide con su conjugada, se dice que la matriz es hermítica.
+Se invierte la matriz de filas se transforman en columnas
+*/
 /* Time in seconds from some point in the past */
 double dwalltime();
 
