@@ -24,7 +24,7 @@ int main(int argc,char*argv[]){
 */
 #pragma omp parallel for shared(A) private(i,j)
   for(i=0;i<N;i++){
-    //#pragma omp parallel for shared(i) private(j) y sacando el de arriba, se parametriza los decendientes.
+    //#pragma omp parallel for firstprivate(i) y sacando el de arriba, se parametriza los decendientes.
     for(j=0;j<N;j++){
 	    	A[i*N+j]=i*j;
     }

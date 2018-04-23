@@ -19,11 +19,12 @@ int main(int argc,char*argv[]){
    printf("\n Faltan argumentos:: N dimension de la matriz, T cantidad de threads \n");
    return 0;
   }
+
    N=atoi(argv[1]);
    int numThreads = atoi(argv[2]);
    omp_set_num_threads(numThreads);	
 
- //Aloca memoria para las matrices
+  //Aloca memoria para las matrices
   A=(double*)malloc(sizeof(double)*N*N);
 
   //Inicializa la matriz con unos en el triangulo inferior y ceros en el triangulo superior.
@@ -40,24 +41,35 @@ int main(int argc,char*argv[]){
 
    }
   }   
-
+/*
+Si no pones default, si las varibles internas del shared no estan declaradas, tira error de compilacion 
+*/
+//printf("%d , %d",i,j);
 #pragma omp parallel default(none) private(i,j,temp,timetick,tid) shared(A,N)
 { 
  tid= omp_get_thread_num();
  timetick = dwalltime();
- #pragma omp for private(i,j,temp) nowait
+  //saque private i,j,temp
+ //el nowait hace que no tengas que esperar a la sincronizacion, osea q si termino el for siga siga en el printf
+  /*
+      Con el scheduling defino la cantidad de CARGA que va tener cada hilo. SI yo lo dejo que solo divida parejo
+    entre todos los que hace el pragma for, voy a tener q recorrer todo y la matriz es una triangular, por lo que
+    no seria correcto.
+      Con el dynamic dividis entre comillas estaticamente la carga entre los hilos, por mas que sean 4 y tenga matriz e 1024
+    el numero que le coloque va ser la misma para cada uno.
+    RESPUESTA: hay un error en el recorrido por ser matriz triangular y no una completa.
+  */
+  
+  #pragma omp for nowait schedule(dynamic,2)
   for(i=0;i<N;i++){
    for(j=i+1;j<N;j++){
 		temp = A[i*N+j];
 		A[i*N+j]= A[j*N+i];
 		A[j*N+i]= temp;
-   
    }
   }   
-    printf("Tiempo en segundos para el thread %d: %f \n", tid,dwalltime() - timetick);
+  printf("Tiempo en segundos para el thread %d: %f \n", tid,dwalltime() - timetick);
 }
-
-   
 
   //Chequea los resultados
   for(i=0;i<N;i++){
@@ -70,7 +82,6 @@ int main(int argc,char*argv[]){
 		{
 			check= check&&(A[i*N+j]== 1.0);
 		}
-
    }
   }   
 

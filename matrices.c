@@ -48,6 +48,8 @@ int main(int argc,char*argv[]){
 #pragma omp parallel for shared(C,A,B) private(i,j,k)
   for(i=0;i<N;i++){
    //#pragma omp parallel for shared(i) private(j,k)
+   //#pragma omp parallel for firstprivate(i)
+   //Cualquiera de las dos soluciones es correcta
    for(j=0;j<N;j++){
     C[i*N+j]=0;
     for(k=0;k<N;k++){
